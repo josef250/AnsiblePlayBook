@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade Ubuntu servers
-  hosts: ubuntu_servers
+  hosts: nodes
   become: yes
   tasks:
 
