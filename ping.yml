@@ -4,6 +4,13 @@
   become: yes
   tasks:
 
+    - name: Wait for apt lock to be released
+      shell: |
+        while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+          sleep 5
+        done
+      changed_when: false
+
     - name: Update APT package cache
       apt:
         update_cache: yes
@@ -20,9 +27,3 @@
     - name: Autoclean local repository of retrieved package files
       apt:
         autoclean: yes
-- name: Wait for apt lock to be released
-  shell: |
-    while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
-      sleep 5
-    done
-  changed_when: false
