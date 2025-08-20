@@ -1,13 +1,14 @@
 ---
-- name: Update and upgrade packages on target hosts
-  hosts: nodes
-  become: true
-  tasks:
+- name: Update and upgrade packages on nodes
+  hosts: nodes  # Target the 'nodes' group defined in your inventory
+  become: true  # Use sudo to escalate privileges
+  become_user: root  # Run as root after sudo
 
+  tasks:
     - name: Update apt cache
       apt:
         update_cache: yes
-        cache_valid_time: 3600  # Only update if older than 1 hour
+        cache_valid_time: 3600
 
     - name: Upgrade all packages
       apt:
