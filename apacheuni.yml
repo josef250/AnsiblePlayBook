@@ -1,0 +1,29 @@
+---
+- name: Uninstall Apache Web Server from Ubuntu nodes
+  hosts: nodes
+  become: true  # Use sudo privileges
+  become_user: root
+
+  tasks:
+    - name: Stop Apache service
+      systemd:
+        name: apache2
+        state: stopped
+        enabled: false
+
+    - name: Disable Apache service from starting at boot
+      systemd:
+        name: apache2
+        enabled: false
+
+    - name: Remove Apache package
+      apt:
+        name: apache2
+        state: absent
+
+    - name: Remove Apache configuration files (if desired)
+      file:
+        path: "/etc/apache2"
+        state: absent
+        recurse: yes
+
