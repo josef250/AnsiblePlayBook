@@ -1,8 +1,8 @@
 ---
-- name: Install and configure Cockpit and Pacemaker on Ubuntu nodes
-  hosts: nodes  # Target the 'nodes' group defined in your inventory
-  become: true  # Use sudo to escalate privileges
-  become_user: root  # Run as root after sudo
+- name: Install Cockpit and Pacemaker on Ubuntu nodes
+  hosts: nodes
+  become: true
+  become_user: root
 
   tasks:
     - name: Install Cockpit package
@@ -10,11 +10,6 @@
         name: cockpit
         state: present
         update_cache: yes
-
-    - name: Install Cockpit Pacemaker extension
-      apt:
-        name: cockpit-pacemaker
-        state: present
 
     - name: Install Pacemaker and Corosync packages
       apt:
@@ -42,3 +37,10 @@
         name: corosync
         state: started
         enabled: true
+
+    - name: Open Cockpit port (9090) in the firewall (UFW)
+      ufw:
+        rule: allow
+        name: 'Cockpit'
+        state: enabled
+      when: ansible_facts['ansible_os_family'] == 'Debian'
