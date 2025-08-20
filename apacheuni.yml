@@ -24,8 +24,4 @@
     - name: Remove Apache configuration files
       command: rm -rf /etc/apache2
 
-    - name: Remove UFW Apache rules (if UFW is enabled)
-      ufw:
-        rule: deny
-        name: 'Apache'
-        state: absent
+
