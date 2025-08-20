@@ -1,29 +1,20 @@
 ---
-- name: Update and upgrade Ubuntu servers
+- name: Install Apache on Ubuntu servers
   hosts: nodes
   become: yes
   tasks:
 
-    - name: Wait for apt lock to be released
-      shell: |
-        while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
-          sleep 5
-        done
-      changed_when: false
-
     - name: Update APT package cache
       apt:
         update_cache: yes
-        cache_valid_time: 3600
 
-    - name: Upgrade all packages to latest version
+    - name: Install Apache2 package
       apt:
-        upgrade: dist
+        name: apache2
+        state: present
 
-    - name: Autoremove unnecessary packages
-      apt:
-        autoremove: yes
-
-    - name: Autoclean local repository of retrieved package files
-      apt:
-        autoclean: yes
+    - name: Ensure Apache2 is running and enabled
+      service:
+        name: apache2
+        state: started
+        enabled: yes
