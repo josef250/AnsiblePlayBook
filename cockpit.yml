@@ -1,0 +1,25 @@
+---
+- name: Install and configure Cockpit on Ubuntu nodes
+  hosts: nodes  # Target the 'nodes' group defined in your inventory
+  become: true  # Use sudo to escalate privileges
+  become_user: root  # Run as root after sudo
+
+  tasks:
+    - name: Install Cockpit package
+      apt:
+        name: cockpit
+        state: present
+        update_cache: yes  # Update apt cache before installing
+
+    - name: Ensure Cockpit service is started and enabled
+      systemd:
+        name: cockpit
+        state: started
+        enabled: true
+
+    - name: Open the Cockpit port (9090) in the firewall (UFW)
+      ufw:
+        rule: allow
+        name: 'Cockpit'
+        state: enabled
+      when: ansible_facts['ansible_os_family'] == 'Debian'
