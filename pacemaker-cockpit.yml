@@ -1,0 +1,46 @@
+---
+- name: Install Cockpit and Pacemaker plugin on Ubuntu nodes
+  hosts: nodes
+  become: true
+  become_user: root
+
+  tasks:
+    - name: Install Cockpit
+      apt:
+        name: cockpit
+        state: present
+        update_cache: yes
+
+    - name: Install Pacemaker and Corosync
+      apt:
+        name:
+          - pacemaker
+          - corosync
+          - crmsh
+        state: present
+        update_cache: yes
+
+    - name: Clone Cockpit Pacemaker GitHub repository
+      git:
+        repo: 'https://github.com/cockpit-project/cockpit-pacemaker.git'
+        dest: '/tmp/cockpit-pacemaker'
+
+    - name: Install Pacemaker plugin
+      command: make install
+      args:
+        chdir: /tmp/cockpit-pacemaker
+
+    - name: Start and enable Cockpit
+      systemd:
+        name: cockpit
+        state: started
+        enabled: true
+
+    - name: Start and enable Pacemaker and Corosync
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - pacemaker
+        - corosync
