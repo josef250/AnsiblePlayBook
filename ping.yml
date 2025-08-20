@@ -1,20 +1,14 @@
 ---
-- name: Install Apache on Ubuntu servers
+- name: Update and upgrade packages on target hosts
   hosts: nodes
-  become: yes
+  become: true
   tasks:
 
-    - name: Update APT package cache
+    - name: Update apt cache
       apt:
         update_cache: yes
+        cache_valid_time: 3600  # Only update if older than 1 hour
 
-    - name: Install Apache2 package
+    - name: Upgrade all packages
       apt:
-        name: apache2
-        state: present
-
-    - name: Ensure Apache2 is running and enabled
-      service:
-        name: apache2
-        state: started
-        enabled: yes
+        upgrade: dist
