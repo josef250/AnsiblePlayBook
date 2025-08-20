@@ -1,0 +1,27 @@
+---
+- name: Install and configure Pacemaker on Ubuntu nodes
+  hosts: nodes  # Target the 'nodes' group defined in your inventory
+  become: true  # Use sudo to escalate privileges
+  become_user: root  # Run as root after sudo
+
+  tasks:
+    - name: Install Pacemaker and Corosync packages
+      apt:
+        name:
+          - pacemaker
+          - corosync
+          - crmsh  # CRM shell for managing Pacemaker
+        state: present
+        update_cache: yes  # Update apt cache before installing
+
+    - name: Ensure Pacemaker service is started and enabled
+      systemd:
+        name: pacemaker
+        state: started
+        enabled: true
+
+    - name: Ensure Corosync service is started and enabled
+      systemd:
+        name: corosync
+        state: started
+        enabled: true
