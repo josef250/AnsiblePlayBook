@@ -1,1 +1,22 @@
-ansible all -m ping
+---
+- name: Update and upgrade Ubuntu servers
+  hosts: ubuntu_servers
+  become: yes
+  tasks:
+
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages to latest version
+      apt:
+        upgrade: dist
+
+    - name: Autoremove unnecessary packages
+      apt:
+        autoremove: yes
+
+    - name: Autoclean local repository of retrieved package files
+      apt:
+        autoclean: yes
