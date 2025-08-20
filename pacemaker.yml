@@ -1,10 +1,21 @@
 ---
-- name: Install and configure Pacemaker on Ubuntu nodes
+- name: Install and configure Cockpit and Pacemaker on Ubuntu nodes
   hosts: nodes  # Target the 'nodes' group defined in your inventory
   become: true  # Use sudo to escalate privileges
   become_user: root  # Run as root after sudo
 
   tasks:
+    - name: Install Cockpit package
+      apt:
+        name: cockpit
+        state: present
+        update_cache: yes
+
+    - name: Install Cockpit Pacemaker extension
+      apt:
+        name: cockpit-pacemaker
+        state: present
+
     - name: Install Pacemaker and Corosync packages
       apt:
         name:
@@ -12,7 +23,13 @@
           - corosync
           - crmsh  # CRM shell for managing Pacemaker
         state: present
-        update_cache: yes  # Update apt cache before installing
+        update_cache: yes
+
+    - name: Ensure Cockpit service is started and enabled
+      systemd:
+        name: cockpit
+        state: started
+        enabled: true
 
     - name: Ensure Pacemaker service is started and enabled
       systemd:
