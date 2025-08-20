@@ -17,9 +17,4 @@
         state: started
         enabled: true
 
-    - name: Open the Cockpit port (9090) in the firewall (UFW)
-      ufw:
-        rule: allow
-        name: 'Cockpit'
-        state: enabled
-      when: ansible_facts['ansible_os_family'] == 'Debian'
+  
