@@ -1,0 +1,29 @@
+---
+- name: Install Apache Web Server on Ubuntu nodes
+  hosts: nodes
+  become: true  # Use sudo privileges
+  become_user: root
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Ensure Apache service is started and enabled
+      systemd:
+        name: apache2
+        state: started
+        enabled: true
+
+    - name: Allow HTTP traffic through the firewall
+      ufw:
+        rule: allow
+        name: 'Apache'
+        state: enabled
